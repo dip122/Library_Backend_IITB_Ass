@@ -135,7 +135,7 @@ class BookController {
                 book : updatestatusbook._id,
                 bookname : updatestatusbook.name,
                 author : updatestatusbook.author,
-                message : 'book borrowed'
+                message : 'book_borrowed'
             })
 
             const savedhistory = await historymodel.insertMany([addhistory]);
@@ -175,7 +175,7 @@ class BookController {
                 book : updatedbook._id,
                 bookname : updatedbook.name,
                 author : updatedbook.author,
-                message : 'book returned'
+                message : 'book_returned'
             });
             const savedhistory = await historymodel.insertMany([addhistory]);
             if(!savedhistory){

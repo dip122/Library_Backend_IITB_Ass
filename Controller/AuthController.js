@@ -7,8 +7,8 @@ class AuthController {
 
     static registercontroller = async(req,res)=>{
         try{
-            const {name , email , password, address , contact , department ,role } = req.body;
-            if(!name || !email || !password || !address || !contact || !role){
+            const {name , email , password ,role } = req.body;
+            if(!name || !email || !password ||  !role){
                 return res.status(404).send({
                     success : false,
                     message : "ALl the fields are not available properly"
@@ -28,8 +28,6 @@ class AuthController {
                 name : name,
                 email : email,
                 password : hashedpassword,
-                address : address,
-                contact : contact,
                 role : role
             });
             const saveduser = await usermodel.insertMany([newuser]);
@@ -39,8 +37,6 @@ class AuthController {
                 user : {
                     name : name,
                     email : email,
-                    address : address,
-                    contact : contact,
                     role : role
                 }
             })
@@ -93,8 +89,6 @@ class AuthController {
                 user : {
                     name : user.name,
                     email : user.email,
-                    address : user.address,
-                    contact : user.contact,
                     role : user.role
                 },
                 Token
@@ -112,25 +106,56 @@ class AuthController {
     static deleteAccountController = async(req,res)=>{
         try{
             const id = req.params.id;
-            const user = await usermodel.findById(id);
-            if(!user){
-                return res.status(200).send({
-                    success : false,
-                    message : "User do not exist",
-                })
-            }
-
-            const deleteduser = await usermodel.findByIdAndDelete(id);
+            const updateduser = await usermodel.findByIdAndUpdate(id , { status : "Deleted_User"} , {
+                new : true,
+                runValidators : true
+            })
             return res.status(200).send({
                 success : true,
                 message : "user deleted successfully",
-                user : deleteduser
+                user : updateduser
             })
         }catch(error){
             console.log(error);
             return res.status(500).send({
                 success : false,
                 message : "server side error in case of deleteAccountController",
+                error
+            })
+        }
+    }
+
+    static getAllUsersControllerActive = async(req,res)=>{
+        try{
+            const users = await usermodel.find({status : 'active'});
+            return res.status(500).send({
+                success : true,
+                message : "All users received successfully",
+                users : users
+            })
+        }catch(error){
+            console.log(error);
+            return res.status(500).send({
+                success : true,
+                message : "Server side error in case of getAllUsersController",
+                error
+            })
+        }
+    }
+
+    static getAllUsersControllerdeleted = async(req,res)=>{
+        try{
+            const users = await usermodel.find({status : 'Deleted_User'});
+            return res.status(200).send({
+                success : true,
+                message : "All Deleted users",
+                deleted_users : users
+            })
+        }catch(error){
+            console.log(error);
+            return res.status(500).send({
+                success : false,
+                message : "Server side error in case of getallusersControllerdeleted",
                 error
             })
         }

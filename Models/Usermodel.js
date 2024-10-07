@@ -20,16 +20,9 @@ const Schema = mongoose.Schema({
         type : String,
         required : true,
     },
-    address : {
+    status : {
         type : String,
-        required : true,
-    },
-    contact : {
-        type : String,
-        required : true,
-    },
-    department : {
-        type : String,
+        default : "active"
     },
     role : {
         type : String,
