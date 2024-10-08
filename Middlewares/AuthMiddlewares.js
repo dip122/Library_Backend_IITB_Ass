@@ -59,4 +59,28 @@ const requireSignInAsLibraian = async(req,res,next)=>{
     }
 }
 
-module.exports = {requireSignInAsLibraian, requireSignInAsstudent}
+const requireSignIn = async(req,res,next)=>{
+    try{
+        const token = req.headers.authorization;
+
+        if(!token){
+            return res.status(401).send({
+                success : false,
+                message : "token not received"
+            })       
+        }
+        const decode = await VerifyToken(token);
+        const finduser = await usermodel.findById(decode.id);
+        req.user = finduser;
+        next();
+    }catch(error){
+        console.log(error);
+        return res.status(500).send({
+            success : false,
+            message : "Server side error in case of requireSignIn Middleware",
+            error
+        })
+    }
+}
+
+module.exports = {requireSignInAsLibraian, requireSignInAsstudent , requireSignIn}

@@ -16,6 +16,9 @@ const Schema = mongoose.Schema({
         type : String,
         required : true,
     },
+    return_date : {
+        type : Date
+    },
     status : {
         type : String,
         default : 'available',

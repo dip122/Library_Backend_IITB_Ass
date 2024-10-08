@@ -1,5 +1,6 @@
 const bookmodel = require('../Models/Bookmodel');
 const historymodel = require('../Models/history');
+const mongoose = require('mongoose');
 
 class BookController {
 
@@ -66,12 +67,11 @@ class BookController {
             const bookid = req.params.id;
             const updateData = req.body;
 
+            console.log(updateData);
+
             const updatebook = await bookmodel.findByIdAndUpdate(bookid, updateData , {
                 new : true,
-                runValidators: true
             });
-            console.log(bookid);
-            console.log(updatebook);
 
             if(!updatebook){
                 return res.status(400).send({
@@ -98,7 +98,7 @@ class BookController {
 
     static getallBooksController = async(req,res)=>{
         try{
-            const getallbooks = await bookmodel.find({status : 'available'});
+            const getallbooks = await bookmodel.find({});
             return res.status(200).send({
                 success : true,
                 message : "Successfully received all books",
@@ -120,14 +120,14 @@ class BookController {
             const bookid = req.params.id;
             const book = await bookmodel.findById(bookid);
             if(book.status === 'borrowed'){
-                return res.status(400).send({
+                return res.status(200).send({
                     success : false,
                     message : "Book is not Available"
                 })
             }
             const updatestatusbook = await bookmodel.findByIdAndUpdate(bookid , { status : 'borrowed'}, {
                 new : true,
-                runValidators : true
+                runValidators : true,
             });
             const addhistory = new historymodel({
                 user : user.name,
@@ -166,18 +166,16 @@ class BookController {
             const user  = req.user;
             const updatedbook = await bookmodel.findByIdAndUpdate(bookid , { status : 'available' }, {
                 new : true,
-                runValidators : true
             });
+            const bookObjectId = new mongoose.Types.ObjectId(bookid);
 
-            const addhistory = new historymodel({
-                user : user.name,
-                userid : user._id,
-                book : updatedbook._id,
-                bookname : updatedbook.name,
-                author : updatedbook.author,
+            const history = await historymodel.findOne({book : bookObjectId , message : 'book_borrowed'});
+            const historyid = history._id;
+
+            const savedhistory = await historymodel.findByIdAndUpdate(historyid , {
                 message : 'book_returned'
-            });
-            const savedhistory = await historymodel.insertMany([addhistory]);
+            }, { new : true });
+            // console.log(bookid , savedhistory);
             if(!savedhistory){
                 return res.status(200).send({
                     success : true,

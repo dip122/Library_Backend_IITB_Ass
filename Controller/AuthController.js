@@ -61,7 +61,7 @@ class AuthController {
             }
             const user = await usermodel.findOne({email : email });
             if(!user){
-                return res.status(404).send({
+                return res.status(200).send({
                     success : false,
                     message : "User Do not Exist",
                 })
@@ -87,9 +87,11 @@ class AuthController {
                 success : true,
                 message : "LoginController successful",
                 user : {
+                    _id : user._id,
                     name : user.name,
                     email : user.email,
-                    role : user.role
+                    role : user.role,
+                    status : user.status
                 },
                 Token
             })
@@ -106,6 +108,7 @@ class AuthController {
     static deleteAccountController = async(req,res)=>{
         try{
             const id = req.params.id;
+            console.log(id);
             const updateduser = await usermodel.findByIdAndUpdate(id , { status : "Deleted_User"} , {
                 new : true,
                 runValidators : true
@@ -128,7 +131,7 @@ class AuthController {
     static getAllUsersControllerActive = async(req,res)=>{
         try{
             const users = await usermodel.find({status : 'active'});
-            return res.status(500).send({
+            return res.status(200).send({
                 success : true,
                 message : "All users received successfully",
                 users : users
