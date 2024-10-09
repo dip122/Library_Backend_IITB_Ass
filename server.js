@@ -12,7 +12,7 @@ dotnev.config();
 connectDB();
 
 app.get('/',(req,res)=>{
-    res.send("This is server side programming language");
+    res.send("This is server side programming side");
 });
 
 app.use(express.json());//for json data passing

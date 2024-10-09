@@ -9,5 +9,16 @@
     "morgan": "^1.10.0",
     "node": "^20.18.0",
     "validator": "^13.12.0"
-  }
+  },
+  "name": "library-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
