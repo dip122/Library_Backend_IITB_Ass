@@ -14,6 +14,9 @@ connectDB();
 app.get('/',(req,res)=>{
     res.send("This is server side programming side");
 });
+app.get('/api/v1/book/',(req,res)=>{
+    res.send("this is book side");
+})
 
 app.use(express.json());//for json data passing
 app.use(express.urlencoded({extended : true}));//for FormData passing
